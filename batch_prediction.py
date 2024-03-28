@@ -26,16 +26,20 @@ if __name__ == "__main__":
 
     X = test.drop(["id", "rent"], axis=1, inplace=False)
     id_ = test["id"].to_numpy()
+    y = test["rent"].to_numpy()
 
+    # 테스트 데이터에 대한 피처 데이터 저장
     model["preprocessor"].transform(X=X).to_csv(
         os.path.join(DATA_PATH, "storage", "house_rent_test_feature.csv"),
         index=False,
     )
-    logger.debug("Save the feature data for test set...")
 
     pred_df = pd.DataFrame({"user": id_, "rent": np.expm1(model.predict(X))})
+
     logger.info(f"Batch prediction for {len(pred_df)} users is created.")
 
     save_path = os.path.join(PREDICTION_PATH, f"{DATE}_rent_prediction.csv")
     pred_df.to_csv(save_path, index=False)
-    logger.info(f"Prediction can be found in the following path:\n{save_path}")
+    logger.info(
+        "Prediction can be found in the following path:\n" f"{save_path}"
+    )
